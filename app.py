@@ -1,5 +1,4 @@
 import streamlit as st
-import base64
 
 # --- SAHIFA KONFIGURATSIYASI ---
 st.set_page_config(
@@ -14,8 +13,8 @@ def local_css():
     <style>
     /* Umumiy shrift va fon */
     html, body, [class*="css"] {
-        font-family: 'Poppins', sans-serif; /* Zamonaviy shrift */
-        background-color: #f8f9fc; /* Och kulrang fon */
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fc;
     }
 
     /* Asosiy konteyner */
@@ -28,27 +27,23 @@ def local_css():
 
     /* Sarlavhalar */
     h1, h2, h3 {
-        color: #1e3a8a; /* To'q ko'k rang */
+        color: #1e3a8a;
         font-weight: 600 !important;
     }
 
     /* Professional Card uslubi */
-    .stMarkdown div div {
-        /* Bu yerda hamma divlarni belgilab qo'ymaymiz, faqat kerakligini */
-    }
-
     .transport-card {
         background-color: white;
         padding: 20px;
         border-radius: 16px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Yumshoq soya */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         border: 1px solid #e5e7eb;
         margin-bottom: 20px;
         text-align: center;
         transition: all 0.3s ease;
     }
     .transport-card:hover {
-        transform: translateY(-5px); /* Sichqoncha kelganda ko'tarilish */
+        transform: translateY(-5px);
         box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     }
 
@@ -72,15 +67,6 @@ def local_css():
         border-color: #1e3a8a;
         color: #1e3a8a;
     }
-    /* Ko'k fonli tugmalar uchun */
-    .stButton > button[kind="primary"] {
-        background-color: #1e3a8a;
-        color: white;
-        border: none;
-    }
-    .stButton > button[kind="primary"]:hover {
-        background-color: #1d4ed8;
-    }
 
     /* Ikonka uslubi */
     .transport-icon {
@@ -89,7 +75,7 @@ def local_css():
         display: block;
     }
 
-    /* Realistik rasm uslubi (Rasmning o'zini joylash) */
+    /* Realistik rasm uslubi */
     .transport-image-container {
         width: 100%;
         height: 120px;
@@ -100,18 +86,17 @@ def local_css():
     .transport-image {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Rasmni to'ldirish */
+        object-fit: cover;
     }
-
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     """, unsafe_allow_html=True)
 
 local_css()
 
-# --- CHAP PANEL (SIDEBAR) - SODDA QILIB ---
+# --- CHAP PANEL (SIDEBAR) ---
 st.sidebar.title("BirYol")
-st.sidebar.image("https://raw.githubusercontent.com/mehriddinsultanov71-netizen/biryol-app/main/app/logo.png", width=100) # Logo joyi (agar bo'lsa)
+st.sidebar.image("https://raw.githubusercontent.com/mehriddinsultanov71-netizen/biryol-app/main/app/logo.png", width=100)
 
 menu = ["Bosh sahifa", "AI Yordamchi", "Murojaat yuborish", "Statistika", "Sozlamalar"]
 choice = st.sidebar.radio("Menyu", menu)
@@ -134,14 +119,12 @@ if choice == "Bosh sahifa":
         
         c1, c2 = st.columns(2)
         with c1:
-            st.button("📝 Murojaat yuborish", kind="primary", use_container_width=True)
+            # Xatolik to'g'irlandi: kind o'rniga type ishlatildi
+            st.button("📝 Murojaat yuborish", type="primary", use_container_width=True)
         with c2:
             st.button("💬 AI yordamchidan so'rash", use_container_width=True)
 
     with col_b2:
-        # Bu yerga dizayndagi kabi professional transport rasmlari kollajini qo'yamiz.
-        # Buning uchun internetdan 3 ta realistik rasm linkini foydalanamiz.
-        # (Siz buni o'zingizning rasm fayllaringiz bilan almashtirishingiz mumkin)
         bus_img = "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=400&auto=format&fit=crop"
         metro_img = "https://images.unsplash.com/photo-1512411961421-2e624c965e64?q=80&w=400&auto=format&fit=crop"
         car_img = "https://images.unsplash.com/photo-1494976388531-d105809059f3?q=80&w=400&auto=format&fit=crop"
@@ -156,14 +139,11 @@ if choice == "Bosh sahifa":
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # 2. Transport turlari (Realistik rasmlar bilan professional Cardlar)
+    # 2. Transport turlari (Realistik rasmlar bilan)
     st.markdown("### Transport turlarini tanlang")
     
-    # 6 ta ustun hosil qilish (Barchasini sidebarga oldik)
     t_col1, t_col2, t_col3, t_col4, t_col5, t_col6 = st.columns(6)
 
-    # Transport ma'lumotlari (Rasm linklari va Ikonkalar)
-    # (Siz keyinchalik rasm fayllarini 'images/' papkasiga solib, linklarni o'zgartirishingiz mumkin)
     transports = [
         {"name": "Avtobuslar", "icon": "🚌", "image": "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=400&auto=format&fit=crop"},
         {"name": "Metro", "icon": "🚇", "image": "https://images.unsplash.com/photo-1512411961421-2e624c965e64?q=80&w=400&auto=format&fit=crop"},
@@ -177,7 +157,6 @@ if choice == "Bosh sahifa":
 
     for i, transport in enumerate(transports):
         with cols[i]:
-            # Card uslubidagi HTML
             st.markdown(f"""
                 <div class="transport-card">
                     <div class="transport-image-container">
@@ -187,11 +166,10 @@ if choice == "Bosh sahifa":
                     <h4>{transport['name']}</h4>
                 </div>
             """, unsafe_allow_html=True)
-            # Bosishni aniqlash uchun ko'rinmas tugma
             if st.button(f"Tanlash", key=f"btn_{i}", use_container_width=True):
                 st.info(f"{transport['name']} bo'limi tanlandi!")
 
-    # 3. Statistika qismi (oldingi koddan biroz o'zgartirilgan)
+    # 3. Statistika qismi
     st.markdown("---")
     st.markdown("### Statistika (bugun)")
     stat1, stat2, stat3, stat4 = st.columns(4)
@@ -206,6 +184,5 @@ if choice == "Bosh sahifa":
         st.metric(label="Rad etilgan", value="98", delta="-2.1%", delta_color="inverse")
 
 else:
-    # Boshqa sahifalar uchun vaqtinchalik xabar
     st.title(choice)
     st.write(f"{choice} sahifasi hozircha tayyor emas.")
