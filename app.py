@@ -1,4 +1,13 @@
 import streamlit as st
+from groq import Groq
+
+# --- API SOZLAMASI (Streamlit Secrets orqali) ---
+try:
+    GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+    client = Groq(api_key=GROQ_API_KEY)
+    ai_enabled = True
+except Exception as e:
+    ai_enabled = False
 
 # --- SAHIFA KONFIGURATSIYASI ---
 st.set_page_config(
@@ -100,15 +109,52 @@ if choice == "Bosh sahifa":
                 st.success(f"{item['name']} tanlandi!")
 
 elif choice == "AI Yordamchi":
-    st.title("🤖 AI Yordamchi")
-    st.write("Transport tizimidagi savollaringizni sun'iy intellekt orqali bering.")
+    st.title("🤖 AI Yordamchi (Haqiqiy Sun'iy Intellekt)")
+    st.write("Toshkent shahridagi transport va yo'nalishlar bo'yicha savollaringizni bevosita AIga bering.")
     
-    user_query = st.text_input("Savolingizni yozing:")
-    if st.button("Yuborish", type="primary"):
-        if user_query:
-            st.info(f"AI javobi: Sizning '{user_query}' murojaatingiz bo'yicha tez orada tahlil tayyorlanadi.")
-        else:
-            st.warning("Iltimos, savol kiriting.")
+    # Chat tarixini saqlash
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    # Oldingi xabarlarni chiqarish
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    # Foydalanuvchidan xabar olish
+    if user_query := st.chat_input("Savolingizni yozing..."):
+        st.session_state.messages.append({"role": "user", "content": user_query})
+        with st.chat_message("user"):
+            st.markdown(user_query)
+
+        with st.chat_message("assistant"):
+            if ai_enabled:
+                with st.spinner("Sun'iy intellekt javob tayyorlamoqda..."):
+                    try:
+                        chat_completion = client.chat.completions.create(
+                            messages=[
+                                {
+                                    "role": "system",
+                                    "content": "Sen O'zbekiston transport tizimi va Toshkent shahri yo'nalishlari bo'yicha mutaxassis bo'lgan sun'iy intellekt yordamchisan ('BirYol' loyihasi). Foydalanuvchi savollariga faqat o'zbek tilida aniq, ishonchli va foydali javob ber."
+                                },
+                                {
+                                    "role": "user",
+                                    "content": user_query,
+                                }
+                            ],
+                            model="llama-3.3-70b-versatile",
+                        )
+                        ai_response = chat_completion.choices[0].message.content
+                        st.markdown(ai_response)
+                        st.session_state.messages.append({"role": "assistant", "content": ai_response})
+                    except Exception as e:
+                        error_msg = f"API bilan bog'lanishda xatolik yuz berdi: {e}"
+                        st.error(error_msg)
+                        st.session_state.messages.append({"role": "assistant", "content": error_msg})
+            else:
+                warning_msg = "Streamlit Cloud'da GEMINI_API_KEY (yoki GROQ_API_KEY) Secrets bo'limida sozlanmagan."
+                st.warning(warning_msg)
+                st.session_state.messages.append({"role": "assistant", "content": warning_msg})
 
 elif choice == "Murojaat yuborish":
     st.title("📝 Murojaat yuborish")
