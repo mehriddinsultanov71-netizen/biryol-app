@@ -103,7 +103,6 @@ elif choice == "AI Yordamchi":
     st.title("🤖 AI Yordamchi")
     st.write("Transport tizimidagi savollaringizni sun'iy intellekt orqali bering.")
     
-    # Chat interfeysi uchun sodda namuna
     user_query = st.text_input("Savolingizni yozing:")
     if st.button("Yuborish", type="primary"):
         if user_query:
@@ -118,7 +117,7 @@ elif choice == "Murojaat yuborish":
     with st.form("appeal_form"):
         name = st.text_input("Ism va familiyangiz")
         phone = st.text_input("Telefon raqamingiz (+998...)")
-        transport_type = st.selectbox("Transport turi", ["Avtobus", "Metro", "Elektrobus", "Poyezd", "Taksi", Barchasi="Boshqa"])
+        transport_type = st.selectbox("Transport turi", ["Avtobus", "Metro", "Elektrobus", "Poyezd", "Taksi", "Boshqa"])
         message = st.text_area("Murojaat matni")
         
         submitted = st.form_submit_button("Murojaatni jo'natish", type="primary")
@@ -130,7 +129,7 @@ elif choice == "Murojaat yuborish":
 
 elif choice == "Statistika":
     st.title("📊 Statistika va Tahlillar")
-    st.write("hududiy transport oqimi va kelib tushgan murojaatlar statistikasi.")
+    st.write("Hududiy transport oqimi va kelib tushgan murojaatlar statistikasi.")
     
     col1, col2, col3 = st.columns(3)
     col1.metric("Jami murojaatlar", "1,248", "+12%")
