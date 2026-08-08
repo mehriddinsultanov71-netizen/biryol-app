@@ -58,16 +58,21 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("📞 **Call markaz: 1242**")
 st.sidebar.caption("24/7 qo'llab-quvvatlash")
 
-# --- ASOSIY SAHIFA ---
+# --- SAHIFALAR MANTIQIY QISMI ---
+
 if choice == "Bosh sahifa":
     st.markdown('<p class="main-title">Transportda bir yo\'l!</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-title">Murojaatingizni yuboring, yechimini topamiz</p>', unsafe_allow_html=True)
     
     col1, col2, _ = st.columns([1, 1, 2])
     with col1:
-        st.button("📝 Murojaat yuborish", type="primary", use_container_width=True)
+        if st.button("📝 Murojaat yuborish", type="primary", use_container_width=True):
+            st.session_state['menu_choice'] = "Murojaat yuborish"
+            st.rerun()
     with col2:
-        st.button("💬 AI yordamchidan so'rash", use_container_width=True)
+        if st.button("💬 AI yordamchidan so'rash", use_container_width=True):
+            st.session_state['menu_choice'] = "AI Yordamchi"
+            st.rerun()
 
     st.markdown("---")
     st.markdown("### Transport turlarini tanlang")
@@ -94,6 +99,50 @@ if choice == "Bosh sahifa":
             if st.button("Tanlash", key=item["name"], use_container_width=True):
                 st.success(f"{item['name']} tanlandi!")
 
-else:
-    st.title(choice)
-    st.write("Bu sahifa ulanish jarayonida...")
+elif choice == "AI Yordamchi":
+    st.title("🤖 AI Yordamchi")
+    st.write("Transport tizimidagi savollaringizni sun'iy intellekt orqali bering.")
+    
+    # Chat interfeysi uchun sodda namuna
+    user_query = st.text_input("Savolingizni yozing:")
+    if st.button("Yuborish", type="primary"):
+        if user_query:
+            st.info(f"AI javobi: Sizning '{user_query}' murojaatingiz bo'yicha tez orada tahlil tayyorlanadi.")
+        else:
+            st.warning("Iltimos, savol kiriting.")
+
+elif choice == "Murojaat yuborish":
+    st.title("📝 Murojaat yuborish")
+    st.write("Transport yo'nalishidagi muammo yoki takliflaringizni qoldiring.")
+    
+    with st.form("appeal_form"):
+        name = st.text_input("Ism va familiyangiz")
+        phone = st.text_input("Telefon raqamingiz (+998...)")
+        transport_type = st.selectbox("Transport turi", ["Avtobus", "Metro", "Elektrobus", "Poyezd", "Taksi", Barchasi="Boshqa"])
+        message = st.text_area("Murojaat matni")
+        
+        submitted = st.form_submit_button("Murojaatni jo'natish", type="primary")
+        if submitted:
+            if name and message:
+                st.success("Murojaatingiz muvaffaqiyatli qabul qilindi! Tez orada ko'rib chiqiladi.")
+            else:
+                st.error("Iltimos, majburiy maydonlarni to'ldiring.")
+
+elif choice == "Statistika":
+    st.title("📊 Statistika va Tahlillar")
+    st.write("hududiy transport oqimi va kelib tushgan murojaatlar statistikasi.")
+    
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Jami murojaatlar", "1,248", "+12%")
+    col2.metric("Hal etilganlar", "1,120", "+18%")
+    col3.metric("Jarayondagilar", "128", "-4%")
+    
+    st.info("Tez kunda interaktiv grafiklar qo'shiladi.")
+
+elif choice == "Sozlamalar":
+    st.title("⚙️ Sozlamalar")
+    st.write("Ilova parametrlarini o'zgartirish.")
+    
+    st.selectbox("Tilni tanlang", ["O'zbekcha", "Русский", "English"])
+    st.toggle("Tungi rejim (Dark Mode)", value=False)
+    st.button("Saqlash", type="primary")
